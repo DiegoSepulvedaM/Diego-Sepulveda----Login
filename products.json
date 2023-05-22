@@ -1,0 +1,19 @@
+[
+{
+  "id":1,
+  "title":"Teclado",
+  "description":"Steelseries",
+  "price":123.45,
+  "stock":3,
+  "category":"Electronica",
+  "estado":true
+},
+{ "id":2,
+  "title":"Mouse",
+  "description":"HyperX",
+  "price":200.45,
+  "stock":3,
+  "category":"Electronica",
+  "estado":true
+}
+]
