@@ -1,20 +1,42 @@
 import cartRouter from "./routes/cart.router.js";
 import productsRouter from "./routes/products.router.js";
 import viewsRouter from "./routes/view.router.js";
+import sessionRouter from "./routes/session.router.js";
 import handlebars from "express-handlebars";
 import express from "express";
 import cors from "cors";
 import { __dirname,} from "./utils.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
+import cookieParser from "cookie-parser";
+import session from "express-session";
 
 const PORT = 8080;
 
 const app = express();
+try {
 mongoose.connect(
   `mongodb+srv://diegosepu:2hQM9Rr3XUvfbwMs@cluster1ds.czhv5gd.mongodb.net/?retryWrites=true&w=majority`
 );
+console.log(`Base de datos conectada`);
+} catch (error) {
+  console.log(error.message);
+}
 
+app.use(
+  session({
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    }),
+    secret: "BackendDiego",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(cookieParser("BackendDiego"));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +47,7 @@ app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
 app.use("/", viewsRouter);
+app.use("/api/session", sessionRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 
